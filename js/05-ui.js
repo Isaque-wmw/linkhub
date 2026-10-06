@@ -15,7 +15,7 @@ function modal(title,body,{onMount}={}){
   (o.querySelector('input,button')||{}).focus?.();return o}
 function confirmBox(title,text,onOk){
   modal(title,`<p class="sub">${text}</p><div class="ft"><button class="btn" data-x>Cancelar</button><button class="btn pri" data-ok style="background:var(--red);box-shadow:none">Excluir</button></div>`,
-   {onMount(o,close){$('[data-x]',o).onclick=close;$('[data-ok]',o).onclick=async e=>{e.target.disabled=true;await onOk();close()}}})}
+   {onMount(o,close){$('[data-x]',o).onclick=close;$('[data-ok]',o).onclick=async e=>{e.target.disabled=true;try{await onOk()}catch{toast('Não foi possível excluir. Verifique sua permissão de edição.',true)}close()}}})}
 /* formulário genérico: campos [{id,label,type,req,validate,...}] */
 function formModal(title,fields,values,okLabel,onSave,extra){
   const html=fields.map(f=>`<div class="f" data-f="${f.id}"><label for="${f.id}">${f.label}${f.req?' *':''}</label>${
@@ -30,4 +30,4 @@ function formModal(title,fields,values,okLabel,onSave,extra){
         if(f.req&&!v)m='Campo obrigatório.';else if(v&&f.validate)m=f.validate(v)||'';
         box.classList.toggle('bad',!!m);$('.er',box).textContent=m;if(m)ok=false});
       if(!ok)return;const b=$('[type=submit]',o);b.disabled=true;b.textContent='Salvando…';
-      try{await onSave(data);close()}catch{toast('Não foi possível salvar. Tente novamente.',true);b.disabled=false;b.textContent=okLabel}}}})}
+      try{await onSave(data);close()}catch{toast('Não foi possível salvar. Verifique sua conexão e se você tem permissão de edição.',true);b.disabled=false;b.textContent=okLabel}}}})}

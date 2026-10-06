@@ -116,3 +116,4 @@ textarea{resize:vertical;min-height:70px}
 .cfg{padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;opacity:.75}
 .pill{font-size:11.5px;padding:3px 10px;border-radius:99px;background:#8b5cf620;color:#b9a2ff}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.mode{display:flex;gap:10px;align-items:center;padding:8px 12px;color:var(--mu);font-size:12px;white-space:nowrap;overflow:hidden}.mode i{width:8px;height:8px;border-radius:50%;background:var(--amb);flex:none}.mode.on i{background:var(--grn);box-shadow:0 0 0 4px #34d39922}

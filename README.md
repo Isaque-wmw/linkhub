@@ -1,20 +1,23 @@
 # LinkHub
 
-Gerenciador de links de ambientes (PRD/HOM/...) por cliente.
+Gerenciador de links de ambientes (PRD/HOM/...) por cliente. HTML/CSS/JS puro, sem build.
 
-## Como usar
-Abra `index.html` no navegador. Não precisa de build nem servidor.
+## Rodar
+Abra `index.html` (modo local, dados só no navegador) ou publique no GitHub Pages.
+
+## Banco compartilhado (Supabase, grátis)
+1. Crie um projeto em https://supabase.com.
+2. SQL Editor: cole e execute o conteúdo de `supabase.sql`.
+3. Project Settings > API: copie a **Project URL** e a chave **anon public**.
+4. Cole em `js/00-config.js` e faça commit/push.
+5. Todos que abrirem o site passam a ver os mesmos dados (sincroniza a cada 5 s).
+
+> A política do `supabase.sql` deixa o banco aberto a quem tiver o link. Para restringir à equipe, adicione login com Supabase Auth.
+
+## GitHub Pages
+Settings > Pages > Deploy from a branch > `main` / root.
 
 ## Estrutura
-- `css/styles.css` — tema dark, layout e componentes
-- `js/01-icons.js` — ícones SVG
-- `js/02-models.js` — modelos (Client, Link) e ambientes
-- `js/03-repository.js` — persistência (localStorage). Troque por chamadas HTTP para integrar um backend
-- `js/04-services.js` — regras de CRUD usadas pelas páginas
-- `js/05-ui.js` — toast, modal, confirmação, formulário genérico
-- `js/06-components.js` — ClientCard, LinkRow, Stat, Empty
-- `js/07-forms.js` — formulários de cliente e link
-- `js/08-pages.js` — Dashboard, Clientes, Cliente, Configurações
-- `js/09-app.js` — roteador (hash) e shell
-
-Os scripts são carregados em ordem pelo `index.html` (sem módulos ES, para funcionar também via file://).
+- `js/00-config.js` configuração
+- `js/02-models.js` modelos · `js/03-repository.js` persistência (local ou Supabase) · `js/04-services.js` regras de CRUD
+- `js/05-ui.js`, `06-components.js`, `07-forms.js`, `08-pages.js`, `09-app.js` interface e roteador

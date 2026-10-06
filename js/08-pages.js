@@ -6,14 +6,15 @@ async function ClientsPage(full){
     <button class="btn pri" id="newc">${ico('plus')}Novo cliente</button></div><div id="stats"></div>
     <div class="bar"><div class="search">${ico('search')}<input id="q" type="search" placeholder="Buscar cliente por nome…" aria-label="Buscar cliente"></div></div><div id="grid">${skel(6)}</div>`;
   $('#newc').onclick=()=>clientForm(null,route);
-  const list=await Svc.list();let q='';
-  if(!full)$('#stats').innerHTML=`<div class="stats">${Stat('users',list.length,'Clientes cadastrados')}${Stat('link',list.reduce((a,c)=>a+c.links.length,0),'Links no total')}${Stat('srv',list.reduce((a,c)=>a+c.links.filter(l=>l.env==='PRD').length,0),'Ambientes de produção')}</div>`;
+  let list=await Svc.list();let q='';
+  const stats=()=>{if(!full)$('#stats').innerHTML=`<div class="stats">${Stat('users',list.length,'Clientes cadastrados')}${Stat('link',list.reduce((a,c)=>a+c.links.length,0),'Links no total')}${Stat('srv',list.reduce((a,c)=>a+c.links.filter(l=>l.env==='PRD').length,0),'Ambientes de produção')}</div>`};stats();
   const grid=$('#grid');
   const draw=()=>{const f=list.filter(c=>c.name.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
     grid.innerHTML=!list.length?Empty('users','Nenhum cliente cadastrado','Cadastre o primeiro cliente para começar a organizar os links dos ambientes.','<button class="btn pri" data-new>'+ico('plus')+'Cadastrar cliente</button>')
      :!f.length?Empty('search','Nenhum resultado',`Nada encontrado para “${esc(q)}”. Verifique o nome e tente de novo.`)
      :`<div class="grid">${f.map(ClientCard).join('')}</div>`;
     const nb=$('[data-new]',grid);if(nb)nb.onclick=()=>clientForm(null,route)};
+  Repo.watch(l=>{list=l;stats();draw()});
   draw();$('#q').oninput=e=>{q=e.target.value.trim().toLowerCase();draw()};
   grid.onclick=e=>{const card=e.target.closest('.cc');if(!card)return;const c=list.find(x=>x.id===card.dataset.id);
     if(e.target.closest('[data-stop]'))return;
@@ -21,8 +22,8 @@ async function ClientsPage(full){
     if(e.target.closest('[data-del]'))return confirmBox('Excluir cliente',`“${esc(c.name)}” e todos os seus ${c.links.length} links serão removidos. Esta ação não pode ser desfeita.`,async()=>{await Svc.deleteClient(c.id);toast('Cliente excluído.');route()});
     location.hash='#/cliente/'+c.id};
   grid.onkeydown=e=>{if(e.key==='Enter'&&e.target.classList.contains('cc'))location.hash='#/cliente/'+e.target.dataset.id}}
-async function ClientPage(id){
-  view.innerHTML=skel(3);const c=await Svc.get(id);
+async function ClientPage(id,quiet){
+  if(!quiet)view.innerHTML=skel(3);const c=await Svc.get(id);
   if(!c){view.innerHTML=Empty('users','Cliente não encontrado','Ele pode ter sido excluído.','<a class="btn pri" href="#/clientes">Ver clientes</a>');return}
   const groups=envOrder(c.links);
   view.innerHTML=`<a class="back" href="#/clientes">${ico('back')}Clientes</a>
@@ -30,7 +31,8 @@ async function ClientPage(id){
    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="ec">${ico('edit')}Editar</button><button class="btn dng" id="dc">${ico('trash')}Excluir</button><button class="btn pri" id="nl">${ico('plus')}Novo link</button></div></div>
    ${groups.length?groups.map(e=>{const ls=c.links.filter(l=>l.env===e);return `<section class="card sec ${envCls(e)}"><div class="sh"><span class="dot"></span><h2>${esc(e)}</h2><span class="cnt">${ls.length} ${ls.length===1?'link':'links'}</span></div>${ls.map(LinkRow).join('')}</section>`}).join('')
    :Empty('link','Nenhum link cadastrado','Adicione os links de PRD, HOM e outros ambientes deste cliente.','<button class="btn pri" id="nl2">'+ico('plus')+'Adicionar link</button>')}`;
-  const again=()=>ClientPage(id);
+  const again=()=>ClientPage(id,true);
+  Repo.watch(()=>ClientPage(id,true));
   $('#ec').onclick=()=>clientForm(c,again);
   $('#dc').onclick=()=>confirmBox('Excluir cliente',`“${esc(c.name)}” e todos os seus links serão removidos. Esta ação não pode ser desfeita.`,async()=>{await Svc.deleteClient(c.id);toast('Cliente excluído.');location.hash='#/clientes'});
   $('#nl').onclick=()=>linkForm(c.id,null,again);const n2=$('#nl2');if(n2)n2.onclick=$('#nl').onclick;
