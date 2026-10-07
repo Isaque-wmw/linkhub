@@ -5,6 +5,7 @@ const Svc={
   async saveClient(d,id){const c=id&&await this.get(id);
     return Repo.put(c?{...c,name:d.name.trim(),notes:d.notes.trim()}:Client(d))},
   deleteClient:id=>Repo.del(id),
+  async saveInfo(cid,info){const c=await this.get(cid);return Repo.put({...c,info})},
   async saveLink(cid,d,lid){const c=await this.get(cid);
     const links=lid?c.links.map(x=>x.id===lid?{...Link(d),id:lid}:x):[...c.links,Link(d)];
     return Repo.put({...c,links})},
