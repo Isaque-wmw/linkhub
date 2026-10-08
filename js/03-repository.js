@@ -1,16 +1,9 @@
 /* ============ PERSISTÊNCIA (dois backends, mesma interface) ============ */
-const seedData=()=>[
-  {id:uid(),name:'Acme Logística',notes:'ERP e portal do transportador',links:[
-    Link({name:'Portal ERP',url:'erp.acme.example.com',env:'PRD'}),Link({name:'Portal ERP',url:'erp-hom.acme.example.com',env:'HOM'}),Link({name:'API de integração',url:'api.acme.example.com/v2',env:'PRD'})]},
-  {id:uid(),name:'Nova Saúde',notes:'',links:[
-    Link({name:'Prontuário',url:'app.novasaude.example.com',env:'PRD'}),Link({name:'Prontuário (testes)',url:'hom.novasaude.example.com',env:'HOM'})]},
-  {id:uid(),name:'Orbita Varejo',notes:'',links:[]}];
-
 /* Local: usado fora do claude.ai (ex.: abrindo o index.html do .zip). Dados só no navegador. */
 const LocalBackend={
   key:'linkhub.clients.v1',
   async start(set){let d;try{d=JSON.parse(localStorage.getItem(this.key))}catch{}
-    if(!Array.isArray(d)){d=seedData();this._w(d)}set(d)},
+    set(Array.isArray(d)?d:[])},
   _w(list){try{localStorage.setItem(this.key,JSON.stringify(list))}catch{}},
   async put(c,list){this._w(list)},
   async del(id,list){this._w(list)}
