@@ -15,7 +15,7 @@ function LinkRow(l){return `<div class="lk" data-lid="${l.id}"><div class="t"><a
   <button class="ib" data-ledit aria-label="Editar link">${ico('edit')}</button><button class="ib dng" data-ldel aria-label="Excluir link">${ico('trash')}</button></div></div>`}
 
 /* Painel lateral de informações livres (Integração, VPN, Observação...) */
-const PRESETS=['Integração','VPN','Observação'];
+const PRESETS=['ERP','Integração','VPN','Observação'];
 const InfoPanel=c=>{const i=c.info||[];
   return `<aside class="card info" id="info"><div class="sh"><h2>Informações</h2><span class="sp"></span><button class="ib" id="ei" aria-label="Editar informações">${ico('edit')}</button></div>
   <div class="ibody">${i.length?i.map(b=>`<div class="blk"><h3>${esc(b.label)}</h3><p>${esc(b.value)||'<span class="none">—</span>'}</p></div>`).join('')
