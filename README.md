@@ -22,3 +22,6 @@ Settings > Pages > Deploy from a branch > `main` / root.
 - `js/00-config.js` configuração
 - `js/02-models.js` modelos · `js/03-repository.js` persistência (local ou Supabase) · `js/04-services.js` regras de CRUD
 - `js/05-ui.js`, `06-components.js`, `07-forms.js`, `08-pages.js`, `09-app.js` interface e roteador
+
+## Arquivos anexados
+Cada cliente aceita até 10 arquivos de até 5 MB (PDF, imagens, Office, txt/csv/json/xml, zip). Os limites ficam em `LIMITS` (`js/02-models.js`); o limite de 5 MB também é imposto pelo Supabase (`supabase.sql`). Se mudar o tamanho, altere nos dois lugares. Execute o `supabase.sql` de novo para criar o bucket.

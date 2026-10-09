@@ -22,6 +22,18 @@ async function ClientsPage(full){
     if(e.target.closest('[data-del]'))return confirmBox('Excluir cliente',`“${esc(c.name)}” e todos os seus ${c.links.length} links serão removidos. Esta ação não pode ser desfeita.`,async()=>{await Svc.deleteClient(c.id);toast('Cliente excluído.');route()});
     location.hash='#/cliente/'+c.id};
   grid.onkeydown=e=>{if(e.key==='Enter'&&e.target.classList.contains('cc'))location.hash='#/cliente/'+e.target.dataset.id}}
+function wireFiles(c,again){
+  const inp=$('#fin'),box=$('#files');
+  const send=async list=>{list=[...list];if(!list.length)return;const b=$('#upl');b.disabled=true;b.textContent='Enviando…';
+    try{const errs=await Svc.addFiles(c.id,list);errs.forEach(e=>toast(e,true));if(errs.length<list.length)toast('Arquivo(s) anexado(s).')}
+    catch{toast('Falha no envio. Verifique sua conexão e permissões.',true)}
+    again()};
+  $('#upl').onclick=()=>inp.click();inp.onchange=()=>send(inp.files);
+  box.ondragover=e=>{e.preventDefault();box.classList.add('over')};box.ondragleave=()=>box.classList.remove('over');
+  box.ondrop=e=>{e.preventDefault();box.classList.remove('over');send(e.dataTransfer.files)};
+  box.onclick=async e=>{const row=e.target.closest('[data-fid]');if(!row)return;const m=(c.files||[]).find(x=>x.id===row.dataset.fid);
+    if(e.target.closest('[data-fdl]')){try{await FileStore.download(m)}catch{toast('Não foi possível baixar o arquivo.',true)}}
+    if(e.target.closest('[data-fdel]'))confirmBox('Excluir arquivo',`“${esc(m.name)}” será removido definitivamente.`,async()=>{await Svc.removeFile(c.id,m.id);toast('Arquivo excluído.');again()})}}
 let infoEditing=false; // evita que a atualização em tempo real apague o que está sendo digitado
 function wireInfo(c,again){
   const box=$('#info');
@@ -45,9 +57,9 @@ async function ClientPage(id,quiet){
    <div class="head"><div style="display:flex;gap:14px;align-items:center"><div class="av" style="width:52px;height:52px">${esc(initials(c.name))}</div><div><h1>${esc(c.name)}</h1><p class="sub">${esc(c.notes)||c.links.length+' '+(c.links.length===1?'link cadastrado':'links cadastrados')}</p></div></div>
    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="ec">${ico('edit')}Editar</button><button class="btn dng" id="dc">${ico('trash')}Excluir</button><button class="btn pri" id="nl">${ico('plus')}Novo link</button></div></div>
    <div class="cols"><div>${groups.length?groups.map(e=>{const ls=c.links.filter(l=>l.env===e);return `<section class="card sec ${envCls(e)}"><div class="sh"><span class="dot"></span><h2>${esc(e)}</h2><span class="cnt">${ls.length} ${ls.length===1?'link':'links'}</span></div>${ls.map(LinkRow).join('')}</section>`}).join('')
-   :Empty('link','Nenhum link cadastrado','Adicione os links de PRD, HOM e outros ambientes deste cliente.','<button class="btn pri" id="nl2">'+ico('plus')+'Adicionar link</button>')}</div>${InfoPanel(c)}</div>`;
+   :Empty('link','Nenhum link cadastrado','Adicione os links de PRD, HOM e outros ambientes deste cliente.','<button class="btn pri" id="nl2">'+ico('plus')+'Adicionar link</button>')}${FilesPanel(c)}</div>${InfoPanel(c)}</div>`;
   const again=()=>ClientPage(id,true);
-  Repo.watch(()=>{if(!infoEditing)ClientPage(id,true)});wireInfo(c,again);
+  Repo.watch(()=>{if(!infoEditing)ClientPage(id,true)});wireInfo(c,again);wireFiles(c,again);
   $('#ec').onclick=()=>clientForm(c,again);
   $('#dc').onclick=()=>confirmBox('Excluir cliente',`“${esc(c.name)}” e todos os seus links serão removidos. Esta ação não pode ser desfeita.`,async()=>{await Svc.deleteClient(c.id);toast('Cliente excluído.');location.hash='#/clientes'});
   $('#nl').onclick=()=>linkForm(c.id,null,again);const n2=$('#nl2');if(n2)n2.onclick=$('#nl').onclick;

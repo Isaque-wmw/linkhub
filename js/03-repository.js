@@ -24,7 +24,7 @@ const SupabaseBackend={
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()});
   },
   async put(c){const r=await fetch(this.url(''),{method:'POST',headers:this.h({Prefer:'resolution=merge-duplicates,return=minimal'}),
-    body:JSON.stringify({id:c.id,name:c.name,notes:c.notes,links:c.links,info:c.info||[]})});if(!r.ok)throw new Error(r.status)},
+    body:JSON.stringify({id:c.id,name:c.name,notes:c.notes,links:c.links,info:c.info||[],files:c.files||[]})});if(!r.ok)throw new Error(r.status)},
   async del(id){const r=await fetch(this.url('?id=eq.'+encodeURIComponent(id)),{method:'DELETE',headers:this.h()});if(!r.ok)throw new Error(r.status)}
 };
 /* Para outro backend (API própria), crie um objeto com start(set)/put(c)/del(id). */

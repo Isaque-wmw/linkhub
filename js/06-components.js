@@ -21,3 +21,11 @@ const InfoPanel=c=>{const i=c.info||[];
   <div class="ibody">${i.length?i.map(b=>`<div class="blk"><h3>${esc(b.label)}</h3><p>${esc(b.value)||'<span class="none">—</span>'}</p></div>`).join('')
   :'<p class="none">Nenhuma informação cadastrada. Use o lápis para adicionar Integração, VPN, observações…</p>'}</div></aside>`};
 const InfoRow=b=>`<div class="irow" data-k="${b.id||uid()}"><div style="display:flex;gap:6px"><input class="lb" placeholder="Título (ex.: VPN)" maxlength="60" value="${esc(b.label)}"><button type="button" class="ib dng" data-rm aria-label="Remover campo">${ico('trash')}</button></div><textarea class="vl" placeholder="Informação…">${esc(b.value)}</textarea></div>`;
+
+/* Anexos do cliente */
+const FileRow=m=>`<div class="lk" data-fid="${m.id}"><div class="fi">${ico('file')}</div><div class="t"><span class="fn">${esc(m.name)}</span><span class="url">${fmtSize(m.size)} · ${new Date(m.at).toLocaleDateString('pt-BR')}</span></div>
+  <div class="acts"><button class="ib" data-fdl aria-label="Baixar arquivo">${ico('dl')}</button><button class="ib dng" data-fdel aria-label="Excluir arquivo">${ico('trash')}</button></div></div>`;
+const FilesPanel=c=>{const f=c.files||[];
+  return `<section class="card sec" id="files"><div class="sh"><h2>Arquivos</h2><span class="cnt">${f.length}/${LIMITS.perClient} · até ${fmtSize(LIMITS.fileBytes)} cada</span><span class="sp"></span>
+  <button class="btn" id="upl" ${f.length>=LIMITS.perClient?'disabled':''}>${ico('plus')}Anexar</button><input type="file" id="fin" multiple hidden></div>
+  <div class="drop">${f.length?f.map(FileRow).join(''):'<p class="none" style="padding:24px;text-align:center;margin:0">Arraste arquivos aqui ou clique em Anexar.</p>'}</div></section>`};

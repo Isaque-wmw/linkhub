@@ -10,7 +10,9 @@ const ICONS={
  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
  ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
  back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',check:'<path d="m5 12 5 5 9-10"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',
- srv:'<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>'
+ srv:'<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>',
+ file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
+ dl:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>'
 };
 const ico=n=>`<svg viewBox="0 0 24 24">${ICONS[n]}</svg>`;
 const hydrate=(r=document)=>r.querySelectorAll('[data-i]').forEach(e=>{e.innerHTML=ico(e.dataset.i);e.style.display='contents'});
