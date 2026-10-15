@@ -15,10 +15,15 @@ function LinkRow(l){return `<div class="lk" data-lid="${l.id}"><div class="t"><a
   <button class="ib" data-ledit aria-label="Editar link">${ico('edit')}</button><button class="ib dng" data-ldel aria-label="Excluir link">${ico('trash')}</button></div></div>`}
 
 /* Painel lateral de informações livres (Integração, VPN, Observação...) */
+/* Escapa o texto e transforma URLs (http://, https://, www.) em links clicáveis */
+const linkify=t=>String(t).split(/(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+)/gi).map((p,i)=>{
+  if(i%2===0)return esc(p);
+  const m=p.match(/[.,;:!?)\]]+$/),tail=m?m[0]:'',u=tail?p.slice(0,-tail.length):p;
+  return `<a class="ilink" href="${esc(/^www\./i.test(u)?'https://'+u:u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a>${esc(tail)}`}).join('');
 const PRESETS=['ERP','Integração','VPN','Observação'];
 const InfoPanel=c=>{const i=c.info||[];
   return `<aside class="card info" id="info"><div class="sh"><h2>Informações</h2><span class="sp"></span><button class="ib" id="ei" aria-label="Editar informações">${ico('edit')}</button></div>
-  <div class="ibody">${i.length?i.map(b=>`<div class="blk"><h3>${esc(b.label)}</h3><p>${esc(b.value)||'<span class="none">—</span>'}</p></div>`).join('')
+  <div class="ibody">${i.length?i.map(b=>`<div class="blk"><h3>${esc(b.label)}</h3><p>${linkify(b.value)||'<span class="none">—</span>'}</p></div>`).join('')
   :'<p class="none">Nenhuma informação cadastrada. Use o lápis para adicionar Integração, VPN, observações…</p>'}</div></aside>`};
 const InfoRow=b=>`<div class="irow" data-k="${b.id||uid()}"><div style="display:flex;gap:6px"><input class="lb" placeholder="Título (ex.: VPN)" maxlength="60" value="${esc(b.label)}"><button type="button" class="ib dng" data-rm aria-label="Remover campo">${ico('trash')}</button></div><textarea class="vl" placeholder="Informação…">${esc(b.value)}</textarea></div>`;
 

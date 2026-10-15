@@ -138,3 +138,4 @@ button.chip{cursor:pointer;font:inherit;font-size:12px;font-weight:600}
 .fn{font-weight:550;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sh .btn{padding:6px 12px}.sh .cnt{white-space:nowrap}
 #files.over{border-color:var(--blue);box-shadow:0 0 0 3px #4f7cff30}
+.ilink{color:#9db4ff;text-decoration:underline;text-decoration-color:#9db4ff55;text-underline-offset:3px;transition:.15s}.ilink:hover{color:#c4d2ff;text-decoration-color:currentColor}
