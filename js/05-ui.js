@@ -1,4 +1,11 @@
 /* ============ UTILIDADES DE UI ============ */
+/* Preferência de abertura dos links (por navegador). Padrão: nova aba. */
+const Prefs={
+  newTab(){try{return localStorage.getItem('linkhub.linkTarget')!=='same'}catch{return true}},
+  setNewTab(v){try{localStorage.setItem('linkhub.linkTarget',v?'new':'same')}catch{}}
+};
+const linkAttrs=()=>Prefs.newTab()?'target="_blank" rel="noopener noreferrer"':'';
+
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const initials=n=>n.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
