@@ -67,4 +67,6 @@ async function ClientPage(id,quiet){
     if(e.target.closest('[data-ledit]'))linkForm(c.id,l,again);
     if(e.target.closest('[data-ldel]'))confirmBox('Excluir link',`O link “${esc(l.name)}” (${esc(l.env)}) será removido.`,async()=>{await Svc.deleteLink(c.id,l.id);toast('Link excluído.');again()})}}
 function ConfigPage(){view.onclick=null;view.innerHTML=`<div class="head"><div><h1>Configurações</h1><p class="sub">Preferências do sistema.</p></div></div>
-  ${[['Tema da interface','Escuro (padrão)'],['Abrir links em nova aba','Sempre ativo'],['Integração com API','Conectar ao backend']].map(([a,b])=>`<div class="card cfg"><div><h2>${a}</h2><p class="sub">${b}</p></div><span class="pill">Em breve</span></div>`).join('')}`}
+  <div class="card cfg live"><div><h2>Tema da interface</h2><p class="sub">Escuro, claro ou seguindo o sistema.</p></div><div class="seg">${[['dark','Escuro'],['light','Claro'],['auto','Automático']].map(([v,l])=>`<button class="${Theme.pref()===v?'on':''}" data-th="${v}">${l}</button>`).join('')}</div></div>
+  ${[['Abrir links em nova aba','Sempre ativo'],['Integração com API','Conectar ao backend']].map(([a,b])=>`<div class="card cfg"><div><h2>${a}</h2><p class="sub">${b}</p></div><span class="pill">Em breve</span></div>`).join('')}`;
+  view.onclick=e=>{const b=e.target.closest('[data-th]');if(b){Theme.set(b.dataset.th);ConfigPage()}}}
