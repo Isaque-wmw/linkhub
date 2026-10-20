@@ -11,6 +11,7 @@ HTML, CSS e JavaScript puros, **sem build e sem dependências**. Os dados ficam 
 - Vários links por cliente, agrupados por ambiente (PRD, HOM, Suporte ou outro).
 - Painel **Informações** por cliente (ERP, Integração, VPN, Observação… ou campos livres). URLs digitadas viram links clicáveis depois de salvas.
 - **Arquivos** anexados por cliente (até 10 arquivos de 5 MB), guardados no Supabase Storage.
+- **Links Úteis:** tela à parte para cadastrar links importantes da equipe (título, URL, descrição e seção), agrupados por seção, com busca e edição.
 - Dashboard com totais de clientes, links e ambientes de produção.
 - Tema **escuro, claro ou automático** (segue o sistema) e menu lateral retrátil.
 - Responsivo: o layout se ajusta de celulares a monitores grandes.
@@ -19,18 +20,6 @@ HTML, CSS e JavaScript puros, **sem build e sem dependências**. Os dados ficam 
 Ficam salvas no navegador de cada pessoa:
 - **Tema da interface:** Escuro, Claro ou Automático. O botão do menu lateral também alterna.
 - **Abrir links:** *Nova aba* (padrão) ou *Aba atual*. Vale para os links dos clientes, os atalhos dos cards e as URLs do painel Informações.
-
-## Configurar o Supabase (para montar do zero)
-1. Crie um projeto em https://supabase.com.
-2. No **SQL Editor**, execute o conteúdo de `supabase.sql`. Ele cria a tabela `clients` (com `links`, `info` e `files`) e o bucket privado `linkhub-files` (limite de 5 MB por arquivo). Pode ser executado de novo sem problemas.
-3. Em **Project Settings → API**, copie a *Project URL* e a chave *anon public*.
-4. Preencha `js/00-config.js`:
-   ```js
-   const CONFIG={ supabaseUrl:'https://SEU-PROJETO.supabase.co', supabaseKey:'SUA_CHAVE_ANON' };
-   ```
-   Com os campos vazios o app roda em **modo local** (dados só no navegador).
-
-> **Segurança:** a chave `anon` é pública por natureza (fica visível no JavaScript). Quem protege os dados são as políticas (RLS) do Supabase, e as do `supabase.sql` deixam leitura e escrita abertas a quem tiver o link do site. Não guarde senhas ou credenciais de VPN nos campos do app. Para restringir à equipe, adicione login com Supabase Auth e troque `to anon` por `to authenticated` nas políticas.
 
 ## Publicação (Netlify)
 Site estático: não precisa de comando de build. Publique a pasta raiz do repositório (*Publish directory* vazio ou `.`). Se o site estiver conectado a este repositório, cada push na branch `main` gera um novo deploy.
@@ -47,7 +36,7 @@ js/
   00-config.js      URL e chave do Supabase
   01-icons.js       ícones SVG
   02-models.js      modelos, ambientes e limites de anexos
-  03-repository.js  persistência (Supabase ou local)
+  03-repository.js  persistência genérica (Supabase ou local): clientes e Links Úteis
   03-files.js       armazenamento de arquivos (Storage ou IndexedDB)
   04-services.js    regras de CRUD
   05-ui.js          toast, modal, confirmação, formulário e preferências

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>LinkHub — Ambientes de clientes</title>
-  <script>try { var p = localStorage.getItem('linkhub.theme') || 'dark', l = p === 'light' || (p === 'auto' && matchMedia('(prefers-color-scheme: light)').matches); document.documentElement.dataset.theme = l ? 'light' : 'dark' } catch (e) { }</script>
+  <script>try { var p = localStorage.getItem('linkhub.theme') || 'auto', l = p === 'light' || (p === 'auto' && matchMedia('(prefers-color-scheme: light)').matches); document.documentElement.dataset.theme = l ? 'light' : 'dark' } catch (e) { }</script>
   <link rel="stylesheet" href="css/styles.css">
   <!-- Tema claro -->
   <link rel="icon" type="image/png" href="./images/favicon-light.png" media="(prefers-color-scheme: light)">
@@ -21,6 +21,7 @@
     </div>
     <a class="nav" href="#/" data-r="home"><i data-i="grid"></i><span class="lbl">Dashboard</span></a>
     <a class="nav" href="#/clientes" data-r="clientes"><i data-i="users"></i><span class="lbl">Clientes</span></a>
+    <a class="nav" href="#/uteis" data-r="uteis"><i data-i="bookmark"></i><span class="lbl">Links Úteis</span></a>
     <a class="nav" href="#/config" data-r="config"><i data-i="cog"></i><span class="lbl">Configurações</span></a>
     <div class="sp"></div>
     <div class="mode" id="mode" title="Origem dos dados"><i></i><span class="lbl">Conectando…</span></div>

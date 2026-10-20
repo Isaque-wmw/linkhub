@@ -1,36 +1,52 @@
 /* ============ COMPONENTES ============ */
-const Empty=(icon,title,text,btn)=>`<div class="empty"><div class="ic">${ico(icon)}</div><h2>${title}</h2><p>${text}</p>${btn||''}</div>`;
-const Stat=(icon,n,l)=>`<div class="card stat"><div class="ic">${ico(icon)}</div><div><b>${n}</b><span>${l}</span></div></div>`;
-const envOrder=links=>[...new Set(links.map(l=>l.env))].sort((a,b)=>envRank(a)-envRank(b)||a.localeCompare(b));
-function ClientCard(c){
-  const chips=envOrder(c.links).map(e=>{const first=c.links.find(l=>l.env===e);
-    return `<a class="chip ${envCls(e)}" href="${esc(first.url)}" ${linkAttrs()} data-stop title="Abrir ${esc(first.name)}">${esc(e)}${ico('ext')}</a>`}).join('');
+const Empty = (icon, title, text, btn) => `<div class="empty"><div class="ic">${ico(icon)}</div><h2>${title}</h2><p>${text}</p>${btn || ''}</div>`;
+const Stat = (icon, n, l) => `<div class="card stat"><div class="ic">${ico(icon)}</div><div><b>${n}</b><span>${l}</span></div></div>`;
+const envOrder = links => [...new Set(links.map(l => l.env))].sort((a, b) => envRank(a) - envRank(b) || a.localeCompare(b));
+function ClientCard(c) {
+  const chips = envOrder(c.links).map(e => {
+    const first = c.links.find(l => l.env === e);
+    return `<a class="chip ${envCls(e)}" href="${esc(first.url)}" ${linkAttrs()} data-stop title="Abrir ${esc(first.name)}">${esc(e)}${ico('ext')}</a>`
+  }).join('');
   return `<article class="card cc" tabindex="0" data-id="${c.id}">
     <div class="row"><div class="av">${esc(initials(c.name))}</div>
-      <div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="meta">${c.links.length} ${c.links.length===1?'link':'links'}</div></div>
+      <div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="meta">${c.links.length} ${c.links.length === 1 ? 'link' : 'links'}</div></div>
       <div class="acts"><button class="ib" data-edit aria-label="Editar cliente">${ico('edit')}</button><button class="ib dng" data-del aria-label="Excluir cliente">${ico('trash')}</button></div></div>
-    <div class="chips">${chips||'<span class="none">Nenhum link cadastrado</span>'}</div></article>`}
-function LinkRow(l){return `<div class="lk" data-lid="${l.id}"><div class="t"><a href="${esc(l.url)}" ${linkAttrs()}>${esc(l.name)}</a><span class="url">${esc(l.url)}</span></div>
-  <div class="acts"><a class="ib" href="${esc(l.url)}" ${linkAttrs()} aria-label="${Prefs.newTab()?'Abrir em nova aba':'Abrir link'}">${ico('ext')}</a>
-  <button class="ib" data-ledit aria-label="Editar link">${ico('edit')}</button><button class="ib dng" data-ldel aria-label="Excluir link">${ico('trash')}</button></div></div>`}
+    <div class="chips">${chips || '<span class="none">Nenhum link cadastrado</span>'}</div></article>`
+}
+function LinkRow(l) {
+  return `<div class="lk" data-lid="${l.id}"><div class="t"><a href="${esc(l.url)}" ${linkAttrs()}>${esc(l.name)}</a><span class="url">${esc(l.url)}</span></div>
+  <div class="acts"><a class="ib" href="${esc(l.url)}" ${linkAttrs()} aria-label="${Prefs.newTab() ? 'Abrir em nova aba' : 'Abrir link'}">${ico('ext')}</a>
+  <button class="ib" data-ledit aria-label="Editar link">${ico('edit')}</button><button class="ib dng" data-ldel aria-label="Excluir link">${ico('trash')}</button></div></div>`
+}
 
 /* Painel lateral de informações livres (Integração, VPN, Observação...) */
 /* Escapa o texto e transforma URLs (http://, https://, www.) em links clicáveis */
-const linkify=t=>String(t).split(/(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+)/gi).map((p,i)=>{
-  if(i%2===0)return esc(p);
-  const m=p.match(/[.,;:!?)\]]+$/),tail=m?m[0]:'',u=tail?p.slice(0,-tail.length):p;
-  return `<a class="ilink" href="${esc(/^www\./i.test(u)?'https://'+u:u)}" ${linkAttrs()}>${esc(u)}</a>${esc(tail)}`}).join('');
-const PRESETS=['ERP','Integração','VPN','Observação'];
-const InfoPanel=c=>{const i=c.info||[];
+const linkify = t => String(t).split(/(https?:\/\/[^\s<>"']+|www\.[^\s<>"']+)/gi).map((p, i) => {
+  if (i % 2 === 0) return esc(p);
+  const m = p.match(/[.,;:!?)\]]+$/), tail = m ? m[0] : '', u = tail ? p.slice(0, -tail.length) : p;
+  return `<a class="ilink" href="${esc(/^www\./i.test(u) ? 'https://' + u : u)}" ${linkAttrs()}>${esc(u)}</a>${esc(tail)}`
+}).join('');
+const PRESETS = ['ERP', 'Integração', 'VPN', 'Observação'];
+const InfoPanel = c => {
+  const i = c.info || [];
   return `<aside class="card info" id="info"><div class="sh"><h2>Informações</h2><span class="sp"></span><button class="ib" id="ei" aria-label="Editar informações">${ico('edit')}</button></div>
-  <div class="ibody">${i.length?i.map(b=>`<div class="blk"><h3>${esc(b.label)}</h3><p>${linkify(b.value)||'<span class="none">—</span>'}</p></div>`).join('')
-  :'<p class="none">Nenhuma informação cadastrada. Use o lápis para adicionar Integração, VPN, observações…</p>'}</div></aside>`};
-const InfoRow=b=>`<div class="irow" data-k="${b.id||uid()}"><div style="display:flex;gap:6px"><input class="lb" placeholder="Título (ex.: VPN)" maxlength="60" value="${esc(b.label)}"><button type="button" class="ib dng" data-rm aria-label="Remover campo">${ico('trash')}</button></div><textarea class="vl" placeholder="Informação…">${esc(b.value)}</textarea></div>`;
+  <div class="ibody">${i.length ? i.map(b => `<div class="blk"><h3>${esc(b.label)}</h3><p>${linkify(b.value) || '<span class="none">—</span>'}</p></div>`).join('')
+      : '<p class="none">Nenhuma informação cadastrada. Use o lápis para adicionar Integração, VPN, observações…</p>'}</div></aside>`
+};
+const InfoRow = b => `<div class="irow" data-k="${b.id || uid()}"><div style="display:flex;gap:6px"><input class="lb" placeholder="Título (ex.: VPN)" maxlength="60" value="${esc(b.label)}"><button type="button" class="ib dng" data-rm aria-label="Remover campo">${ico('trash')}</button></div><textarea class="vl" placeholder="Informação…">${esc(b.value)}</textarea></div>`;
 
 /* Anexos do cliente */
-const FileRow=m=>`<div class="lk" data-fid="${m.id}"><div class="fi">${ico('file')}</div><div class="t"><span class="fn">${esc(m.name)}</span><span class="url">${fmtSize(m.size)} · ${new Date(m.at).toLocaleDateString('pt-BR')}</span></div>
+const FileRow = m => `<div class="lk" data-fid="${m.id}"><div class="fi">${ico('file')}</div><div class="t"><span class="fn">${esc(m.name)}</span><span class="url">${fmtSize(m.size)} · ${new Date(m.at).toLocaleDateString('pt-BR')}</span></div>
   <div class="acts"><button class="ib" data-fdl aria-label="Baixar arquivo">${ico('dl')}</button><button class="ib dng" data-fdel aria-label="Excluir arquivo">${ico('trash')}</button></div></div>`;
-const FilesPanel=c=>{const f=c.files||[];
+const FilesPanel = c => {
+  const f = c.files || [];
   return `<section class="card sec" id="files"><div class="sh"><h2>Arquivos</h2><span class="cnt">${f.length}/${LIMITS.perClient} · até ${fmtSize(LIMITS.fileBytes)} cada</span><span class="sp"></span>
-  <button class="btn" id="upl" ${f.length>=LIMITS.perClient?'disabled':''}>${ico('plus')}Anexar</button><input type="file" id="fin" multiple hidden></div>
-  <div class="drop">${f.length?f.map(FileRow).join(''):'<p class="none" style="padding:24px;text-align:center;margin:0">Arraste arquivos aqui ou clique em Anexar.</p>'}</div></section>`};
+  <button class="btn" id="upl" ${f.length >= LIMITS.perClient ? 'disabled' : ''}>${ico('plus')}Anexar</button><input type="file" id="fin" multiple hidden></div>
+  <div class="drop">${f.length ? f.map(FileRow).join('') : '<p class="none" style="padding:24px;text-align:center;margin:0">Arraste arquivos aqui ou clique em Anexar.</p>'}</div></section>`
+};
+
+/* Links Úteis */
+const UsefulRow = u => `<div class="lk" data-uid="${u.id}"><div class="t"><a href="${esc(u.url)}" ${linkAttrs()}>${esc(u.title)}</a>${u.description ? `<span class="desc">${esc(u.description)}</span>` : ''}<span class="url">${esc(u.url)}</span></div>
+  <div class="acts"><a class="ib" href="${esc(u.url)}" ${linkAttrs()} aria-label="${Prefs.newTab() ? 'Abrir em nova aba' : 'Abrir link'}">${ico('ext')}</a>
+  <button class="ib" data-uedit aria-label="Editar link">${ico('edit')}</button><button class="ib dng" data-udel aria-label="Excluir link">${ico('trash')}</button></div></div>`;
+const UsefulSection = (name, items) => `<section class="card sec oth"><div class="sh"><span class="dot"></span><h2>${esc(name)}</h2><span class="cnt">${items.length} ${items.length === 1 ? 'link' : 'links'}</span></div>${items.map(UsefulRow).join('')}</section>`;
